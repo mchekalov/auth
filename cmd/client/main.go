@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -15,7 +16,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to connect to server %v", err)
 	}
-	defer conn.Close()
+	defer func() {
+		if err = conn.Close(); err != nil {
+			fmt.Printf("Error when closing: %v", err)
+		}
+	}()
 
 	c := desc.NewUserV1Client(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
