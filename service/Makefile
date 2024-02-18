@@ -19,3 +19,9 @@ generate-note-api:
 	--go-grpc_out=pkg/user_v1 --go-grpc_opt=paths=source_relative \
 	--plugin=protoc-gen-go-grpc=bin/protoc-gen-go-grpc \
 	api/user_v1/user.proto
+
+docker-build:
+	docker build -f dockerfile -t service_prod .
+
+docker-run:
+	docker run -p 50051:50051 --name serv_prod -d service_prod

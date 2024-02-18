@@ -51,7 +51,7 @@ func (s *server) Delete(_ context.Context, in *desc.DeleteRequest) (*emptypb.Emp
 }
 
 func main() {
-	lis, err := net.Listen("tcp", "localhost:50051")
+	lis, err := net.Listen("tcp", "0.0.0.0:50051")
 	if err != nil {
 		log.Fatalf("fatal to listen %v", err)
 	}
