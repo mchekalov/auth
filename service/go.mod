@@ -1,10 +1,9 @@
-module github.com/mchekalov/service
+module github.com/mchekalov/auth/service
 
 go 1.22
 
 require (
 	github.com/brianvoe/gofakeit v3.18.0+incompatible
-	github.com/mchekalov/auth v0.0.0-20240212190731-563da4c41408
 	google.golang.org/grpc v1.61.0
 	google.golang.org/protobuf v1.32.0
 )

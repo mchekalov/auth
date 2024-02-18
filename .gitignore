@@ -2,4 +2,4 @@
 .env
 /bin/
 postgres/bin
-servise/bin
+service/bin

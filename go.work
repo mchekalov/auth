@@ -1,4 +1,7 @@
 go 1.22.0
 
-use ./postgres
-use ./service
+use (
+	.
+	./postgres
+	./service
+)
