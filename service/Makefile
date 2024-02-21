@@ -1,3 +1,5 @@
+include .env
+
 LOCAL_BIN:=$(CURDIR)/bin
 
 install-deps:
@@ -24,4 +26,4 @@ docker-build:
 	docker build -f dockerfile -t service_prod .
 
 docker-run:
-	docker run -p 50051:50051 --name serv_prod -d service_prod
+	docker run -p $(GRPC_PORT):50051 --name serv_prod -d service_prod
