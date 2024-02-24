@@ -1,3 +1,4 @@
+# dockerfile
 FROM golang:1.22-alpine AS builder
 
 COPY . /github.com/mchekalov/auth/source
