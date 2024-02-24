@@ -1,11 +1,11 @@
 -- +goose Up
 -- +goose StatementBegin
-create table tuser (
+create table auth_user (
     id serial primary key,
-    uname text not null,
+    user_name text not null,
     email text not null,
     passwordhash varchar,
-    urole integer,
+    user_role integer,
     created_at timestamp not null default now(),
     updated_at timestamp
 );
@@ -13,5 +13,5 @@ create table tuser (
 
 -- +goose Down
 -- +goose StatementBegin
-drop table tuser;
+drop table auth_user;
 -- +goose StatementEnd

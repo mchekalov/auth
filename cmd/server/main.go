@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/mchekalov/auth/service/config"
-	desc "github.com/mchekalov/auth/service/pkg/user_v1"
+	"github.com/mchekalov/auth/config"
+	desc "github.com/mchekalov/auth/pkg/user_v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -30,25 +30,22 @@ type server struct {
 
 func (s *server) Create(ctx context.Context, in *desc.CreateRequest) (*desc.CreateResponse, error) {
 	log.Printf("Create new User %v", in.Info.Name)
-	var UserId int64
+	var userID int64
 
-	row := s.pgx.QueryRow(ctx, "INSERT INTO tuser (uname, email, urole) VALUES ($1, $2, $3) RETURNING id",
+	row := s.pgx.QueryRow(ctx, "INSERT INTO auth_user (user_name, email, user_role) VALUES ($1, $2, $3) RETURNING id",
 		in.Info.Name, in.Info.Email, in.Info.Role)
 
-	err := row.Scan(&UserId)
-	if err != nil {
-		log.Fatalf("failed to insert new row to table tuser: %v", err)
-	}
+	err := row.Scan(&userID)
 
 	return &desc.CreateResponse{
-		Id: UserId,
-	}, nil
+		Id: userID,
+	}, err
 }
 
 func (s *server) Get(ctx context.Context, in *desc.GetRequest) (*desc.GetResponse, error) {
 	log.Printf("User ID %v", in.GetId())
 
-	row := s.pgx.QueryRow(ctx, "SELECT id, uname, email, urole, created_at, updated_at FROM tuser WHERE id=$1", in.GetId())
+	row := s.pgx.QueryRow(ctx, "SELECT id, user_name, email, user_role, created_at, updated_at FROM auth_user WHERE id=$1", in.GetId())
 
 	var id int64
 	var name, email string
@@ -57,9 +54,6 @@ func (s *server) Get(ctx context.Context, in *desc.GetRequest) (*desc.GetRespons
 	var updatedAt sql.NullTime
 
 	err := row.Scan(&id, &name, &email, &role, &createdAt, &updatedAt)
-	if err != nil {
-		log.Printf("failed to get row from the table tuser: %v", err)
-	}
 
 	var updatedAtTime *timestamppb.Timestamp
 	if updatedAt.Valid {
@@ -77,32 +71,24 @@ func (s *server) Get(ctx context.Context, in *desc.GetRequest) (*desc.GetRespons
 			CreatedAt: timestamppb.New(createdAt),
 			UpdatedAt: updatedAtTime,
 		},
-	}, nil
+	}, err
 }
 
 func (s *server) Update(ctx context.Context, in *desc.UpdateRequest) (*emptypb.Empty, error) {
 	log.Printf("Update user %v", in.GetWrap())
 
-	_, err := s.pgx.Exec(ctx, "UPDATE tuser SET uname=$1, email=$2, updated_at=CURRENT_DATE WHERE id=$3",
+	_, err := s.pgx.Exec(ctx, "UPDATE auth_user SET user_name=$1, email=$2, updated_at=CURRENT_DATE WHERE id=$3",
 		in.Wrap.Name, in.Wrap.Email, in.Wrap.Id)
-	if err != nil {
-		log.Printf("Failed when updating user: %v", err)
-		return nil, err
-	}
 
-	return new(emptypb.Empty), nil
+	return new(emptypb.Empty), err
 }
 
 func (s *server) Delete(ctx context.Context, in *desc.DeleteRequest) (*emptypb.Empty, error) {
 	log.Printf("Delete user %v", in.Id)
 
-	_, err := s.pgx.Exec(ctx, "DELETE FROM tuser WHERE id=$1", in.Id)
-	if err != nil {
-		log.Printf("Failed when deleting user: %v", err)
-		return nil, err
-	}
+	_, err := s.pgx.Exec(ctx, "DELETE FROM auth_user WHERE id=$1", in.Id)
 
-	return new(emptypb.Empty), nil
+	return new(emptypb.Empty), err
 }
 
 func main() {

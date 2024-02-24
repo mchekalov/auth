@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"os"
 )
 
@@ -14,6 +15,7 @@ const (
 	pgSslMode      = "PG_SSLMODE"
 )
 
+// PGConfig defines the interface for PostgreSQL configuration.
 type PGConfig interface {
 	DsnString() string
 }
@@ -27,6 +29,8 @@ type pgConfig struct {
 	sslmode  string
 }
 
+// NewPGConfig creates a new instance of PGConfig using environment variables.
+// It returns an error if any required environmental variable is not set.
 func NewPGConfig() (PGConfig, error) {
 	host := os.Getenv(pgHostEnvName)
 	if len(host) == 0 {
@@ -63,7 +67,9 @@ func NewPGConfig() (PGConfig, error) {
 	}, nil
 }
 
+// DsnString constructs the connection string for PostgreSQL using configuration parameters.
 func (cfg *pgConfig) DsnString() string {
-	return "host=" + cfg.host + " port=" + cfg.port + " dbname=" + cfg.basename +
-		" user=" + cfg.user + " password=" + cfg.password + " sslmode=" + cfg.sslmode
+	p := fmt.Sprintf("host=%v port=%v dbname=%v user=%v password=%v sslmode=%v",
+		cfg.host, cfg.port, cfg.basename, cfg.user, cfg.password, cfg.sslmode)
+	return p
 }

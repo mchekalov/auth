@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"net"
 	"os"
 )
 
@@ -10,6 +11,7 @@ const (
 	grpcPortEnvName = "GRPC_PORT"
 )
 
+// GRPCConfig defines the interface for gRPC configuration.
 type GRPCConfig interface {
 	Address() string
 }
@@ -19,6 +21,8 @@ type grpcConfig struct {
 	port string
 }
 
+// NewGRPCConfig creates a new instance of GRPCConfig using environment variables.
+// It returns an error if any required environmental variable is not set.
 func NewGRPCConfig() (GRPCConfig, error) {
 	host := os.Getenv(grpcHostEnvName)
 	if len(host) == 0 {
@@ -35,6 +39,7 @@ func NewGRPCConfig() (GRPCConfig, error) {
 	}, nil
 }
 
+// Address returns the address (host:port) of the gRPC server.
 func (cfg *grpcConfig) Address() string {
-	return cfg.host + ":" + cfg.port
+	return net.JoinHostPort(cfg.host, cfg.port)
 }
