@@ -7,6 +7,7 @@ import (
 	"time"
 
 	desc "github.com/mchekalov/auth/pkg/user_v1"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
