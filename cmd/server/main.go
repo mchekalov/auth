@@ -36,10 +36,13 @@ func (s *server) Create(ctx context.Context, in *desc.CreateRequest) (*desc.Crea
 		in.Info.Name, in.Info.Email, in.Info.Role)
 
 	err := row.Scan(&userID)
+	if err != nil {
+		return nil, err
+	}
 
 	return &desc.CreateResponse{
 		Id: userID,
-	}, err
+	}, nil
 }
 
 func (s *server) Get(ctx context.Context, in *desc.GetRequest) (*desc.GetResponse, error) {
@@ -54,6 +57,9 @@ func (s *server) Get(ctx context.Context, in *desc.GetRequest) (*desc.GetRespons
 	var updatedAt sql.NullTime
 
 	err := row.Scan(&id, &name, &email, &role, &createdAt, &updatedAt)
+	if err != nil {
+		return nil, err
+	}
 
 	var updatedAtTime *timestamppb.Timestamp
 	if updatedAt.Valid {
@@ -71,7 +77,7 @@ func (s *server) Get(ctx context.Context, in *desc.GetRequest) (*desc.GetRespons
 			CreatedAt: timestamppb.New(createdAt),
 			UpdatedAt: updatedAtTime,
 		},
-	}, err
+	}, nil
 }
 
 func (s *server) Update(ctx context.Context, in *desc.UpdateRequest) (*emptypb.Empty, error) {
@@ -79,16 +85,22 @@ func (s *server) Update(ctx context.Context, in *desc.UpdateRequest) (*emptypb.E
 
 	_, err := s.pgx.Exec(ctx, "UPDATE auth_user SET user_name=$1, email=$2, updated_at=CURRENT_DATE WHERE id=$3",
 		in.Wrap.Name, in.Wrap.Email, in.Wrap.Id)
+	if err != nil {
+		return nil, err
+	}
 
-	return new(emptypb.Empty), err
+	return new(emptypb.Empty), nil
 }
 
 func (s *server) Delete(ctx context.Context, in *desc.DeleteRequest) (*emptypb.Empty, error) {
 	log.Printf("Delete user %v", in.Id)
 
 	_, err := s.pgx.Exec(ctx, "DELETE FROM auth_user WHERE id=$1", in.Id)
+	if err != nil {
+		return nil, err
+	}
 
-	return new(emptypb.Empty), err
+	return new(emptypb.Empty), nil
 }
 
 func main() {
