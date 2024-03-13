@@ -95,7 +95,7 @@ func (r *repo) Update(ctx context.Context, info *model.UpdateInfo) error {
 	builder := r.sq.Update(tableName).
 		Set(userNameColumn, infoRepo.Name).
 		Set(emailColumn, infoRepo.Email).
-		Set(updatedAtColumn, "CURRENT_DATE").
+		Set(updatedAtColumn, squirrel.Expr("CURRENT_DATE")).
 		Where(squirrel.Eq{userIDColumn: infoRepo.ID})
 
 	query, args, err := builder.ToSql()
