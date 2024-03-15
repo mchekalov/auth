@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mchekalov/auth/internal/client/db"
 	"github.com/mchekalov/auth/internal/model"
 	"github.com/mchekalov/auth/internal/repository"
 	"github.com/mchekalov/auth/internal/repository/auth/converter"
 	modelRepo "github.com/mchekalov/auth/internal/repository/auth/model"
+	"github.com/mchekalov/platform_common/pkg/db"
 
 	"github.com/Masterminds/squirrel"
 )
