@@ -2,4 +2,4 @@
 .env
 /bin/
 postgres/bin
-service/bin
+service/bin/coverage.out

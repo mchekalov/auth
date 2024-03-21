@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mchekalov/auth/internal/client/db"
 	"github.com/mchekalov/auth/internal/model"
 	"github.com/mchekalov/auth/internal/repository"
 	"github.com/mchekalov/auth/internal/repository/auth/converter"
 	modelRepo "github.com/mchekalov/auth/internal/repository/auth/model"
+	"github.com/mchekalov/platform_common/pkg/db"
 
 	"github.com/Masterminds/squirrel"
 )
@@ -95,7 +95,7 @@ func (r *repo) Update(ctx context.Context, info *model.UpdateInfo) error {
 	builder := r.sq.Update(tableName).
 		Set(userNameColumn, infoRepo.Name).
 		Set(emailColumn, infoRepo.Email).
-		Set(updatedAtColumn, "CURRENT_DATE").
+		Set(updatedAtColumn, squirrel.Expr("CURRENT_DATE")).
 		Where(squirrel.Eq{userIDColumn: infoRepo.ID})
 
 	query, args, err := builder.ToSql()

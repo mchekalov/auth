@@ -5,14 +5,14 @@ import (
 	"log"
 
 	"github.com/mchekalov/auth/internal/api"
-	"github.com/mchekalov/auth/internal/client/db"
-	"github.com/mchekalov/auth/internal/client/db/pg"
-	"github.com/mchekalov/auth/internal/closer"
 	"github.com/mchekalov/auth/internal/config"
 	"github.com/mchekalov/auth/internal/repository"
 	chatrepository "github.com/mchekalov/auth/internal/repository/auth"
 	"github.com/mchekalov/auth/internal/service"
 	chatservice "github.com/mchekalov/auth/internal/service/auth"
+	"github.com/mchekalov/platform_common/pkg/closer"
+	"github.com/mchekalov/platform_common/pkg/db"
+	"github.com/mchekalov/platform_common/pkg/db/pg"
 )
 
 type serviceProvider struct {
