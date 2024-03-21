@@ -45,7 +45,7 @@ func TestUpdate(t *testing.T) {
 	tests := []struct {
 		name               string
 		args               args
-		want               error
+		err                error
 		authRepositoryMock authRepositoryMockFunc
 	}{
 		{
@@ -54,7 +54,7 @@ func TestUpdate(t *testing.T) {
 				ctx: ctx,
 				req: req,
 			},
-			want: nil,
+			err: nil,
 			authRepositoryMock: func(mc *minimock.Controller) repository.AuthRepository {
 				mock := repoMocks.NewAuthRepositoryMock(mc)
 				mock.UpdateMock.Expect(ctx, req).Return(nil)
@@ -67,7 +67,7 @@ func TestUpdate(t *testing.T) {
 				ctx: ctx,
 				req: req,
 			},
-			want: serviceErr,
+			err: serviceErr,
 			authRepositoryMock: func(mc *minimock.Controller) repository.AuthRepository {
 				mock := repoMocks.NewAuthRepositoryMock(mc)
 				mock.UpdateMock.Expect(ctx, req).Return(serviceErr)
@@ -84,8 +84,7 @@ func TestUpdate(t *testing.T) {
 			service := auth.NewService(authRepositoryMock)
 
 			err := service.Update(tt.args.ctx, tt.args.req)
-			require.Equal(t, tt.want, err)
-			require.Equal(t, tt.want, err)
+			require.Equal(t, tt.err, err)
 		})
 	}
 }
